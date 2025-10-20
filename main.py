@@ -16,7 +16,7 @@ def main(page: ft.Page):
         page.update()
 
     def create_task_row(task_id, task_text):
-        task_field = ft.TextField(value=task_text, on_submit= add_task,read_only=True, expand=True)
+        task_field = ft.TextField(value=task_text, read_only=True, expand=True)
 
         def enable_edit(_):
             task_field.read_only = False
@@ -26,7 +26,7 @@ def main(page: ft.Page):
 
         def save_task(_):
             main_db.update_task(task_id=task_id, new_task=task_field.value)
-            page.update()
+            load_task()
 
         save_button = ft.IconButton(icon=ft.Icons.SAVE, on_click=save_task)
 
@@ -35,8 +35,8 @@ def main(page: ft.Page):
             load_task()
 
         delete_button = ft.IconButton(icon=ft.Icons.DELETE, on_click=delete_task)
-        
-        return ft.Row([task_field, edit_button, save_button, delete_button])
+
+        return ft.Row([task_field, edit_button, save_button, delete_button,])
 
     def add_task(_):
         if task_input.value:
@@ -46,13 +46,18 @@ def main(page: ft.Page):
             task_input.value = ""
             page.update()
 
-    task_input = ft.TextField(label='Введите задачу', expand=True)
+    def task_delete_all(_):
+            main_db.delete_all_task()
+            load_task()
+
+    delete_all_button = ft.IconButton(icon=ft.Icons.DELETE_FOREVER, on_click=task_delete_all)
+
+    task_input = ft.TextField(label='Введите задачу',on_submit=add_task ,expand=True)
     add_button = ft.ElevatedButton("ADD", on_click=add_task)
 
-    page.add(ft.Row([task_input, add_button]), task_list,)
+    page.add(ft.Row([task_input, add_button]), task_list, delete_all_button)
 
     load_task()
-
 
 if __name__ == "__main__":
     main_db.init_db()
