@@ -57,7 +57,7 @@ def main(page: ft.Page):
 
     page.add(ft.Row([task_input, add_button]), task_list, delete_all_button)
 
-    load_task()
+    load_task()  
 
 if __name__ == "__main__":
     main_db.init_db()
